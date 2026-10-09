@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delay-to-Dollars | Operational Intelligence Dashboard</title>
+    <meta name="description" content="Interactive operational intelligence dashboard analyzing revenue leakage, delivery bottlenecks, and stockout impact across 4 regions.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="dashboard-header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="logo-mark">D$</div>
+                <div>
+                    <h1>Delay-to-Dollars</h1>
+                    <p class="subtitle">Operational Bottleneck & Revenue-at-Risk Dashboard</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="header-meta">
+                    <span class="badge badge-live">● LIVE</span>
+                    <span class="date-range">Jan 2025 — Dec 2025</span>
+                </div>
+                <div class="filter-group">
+                    <select id="regionFilter" class="filter-select" onchange="applyFilters()">
+                        <option value="All">All Regions</option>
+                        <option value="West">West</option>
+                        <option value="South">South</option>
+                        <option value="North">North</option>
+                        <option value="East">East</option>
+                    </select>
+                    <select id="categoryFilter" class="filter-select" onchange="applyFilters()">
+                        <option value="All">All Categories</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-main">
+        <!-- KPI Cards Row -->
+        <section class="kpi-row" id="kpiRow">
+            <div class="kpi-card" id="kpiRevenue">
+                <div class="kpi-icon revenue-icon">💰</div>
+                <div class="kpi-content">
+                    <span class="kpi-label">Revenue</span>
+                    <span class="kpi-value" id="kpiRevenueValue">$0</span>
+                    <span class="kpi-sub" id="kpiRevenueOrders">0 orders</span>
+                </div>
+            </div>
+            <div class="kpi-card" id="kpiProfit">
+                <div class="kpi-icon profit-icon">📈</div>
+                <div class="kpi-content">
+                    <span class="kpi-label">Profit</span>
+                    <span class="kpi-value" id="kpiProfitValue">$0</span>
+                    <span class="kpi-sub" id="kpiMarginValue">0% margin</span>
+                </div>
+            </div>
+            <div class="kpi-card kpi-danger" id="kpiLostSales">
+                <div class="kpi-icon lost-icon">🚨</div>
+                <div class="kpi-content">
+                    <span class="kpi-label">Lost Sales</span>
+                    <span class="kpi-value" id="kpiLostValue">$0</span>
+                    <span class="kpi-sub" id="kpiStockoutRate">0% stockout rate</span>
+                </div>
+            </div>
+            <div class="kpi-card kpi-warning" id="kpiDelivery">
+                <div class="kpi-icon delivery-icon">🚚</div>
+                <div class="kpi-content">
+                    <span class="kpi-label">Late Delivery Rate</span>
+                    <span class="kpi-value" id="kpiLateRate">0%</span>
+                    <span class="kpi-sub" id="kpiAvgDays">0 avg days</span>
+                </div>
+            </div>
+            <div class="kpi-card" id="kpiGrowth">
+                <div class="kpi-icon growth-icon">📊</div>
+                <div class="kpi-content">
+                    <span class="kpi-label">MoM Growth</span>
+                    <span class="kpi-value" id="kpiGrowthValue">0%</span>
+                    <span class="kpi-sub">Last month vs prior</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Charts Row 1 -->
+        <section class="chart-row">
+            <div class="chart-card chart-wide">
+                <div class="chart-header">
+                    <h3>Monthly Revenue Trend</h3>
+                    <span class="chart-badge">MoM Analysis</span>
+                </div>
+                <div class="chart-body">
+                    <canvas id="monthlyRevenueChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Revenue by Region</h3>
+                    <span class="chart-badge">Geographic</span>
+                </div>
+                <div class="chart-body">
+                    <canvas id="regionRevenueChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Charts Row 2 -->
+        <section class="chart-row">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Product Category Contribution</h3>
+                    <span class="chart-badge">Pareto</span>
+                </div>
+                <div class="chart-body">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Late Deliveries by Region</h3>
+                    <span class="chart-badge chart-badge-danger">Bottleneck</span>
+                </div>
+                <div class="chart-body">
+                    <canvas id="lateDeliveryChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Charts Row 3 -->
+        <section class="chart-row">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Stockout Impact by Product</h3>
+                    <span class="chart-badge chart-badge-danger">Revenue at Risk</span>
+                </div>
+                <div class="chart-body">
+                    <canvas id="stockoutChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Customer Segment Performance</h3>
+                    <span class="chart-badge">Intelligence</span>
+                </div>
+                <div class="chart-body">
+                    <canvas id="segmentChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Delivery Performance Heatmap Row -->
+        <section class="chart-row">
+            <div class="chart-card chart-wide">
+                <div class="chart-header">
+                    <h3>Sales Rep Performance Scorecard</h3>
+                    <span class="chart-badge">Operational</span>
+                </div>
+                <div class="chart-body">
+                    <div class="table-container" id="repScorecardTable"></div>
+                </div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Delivery Days Distribution</h3>
+                    <span class="chart-badge">SLA Analysis</span>
+                </div>
+                <div class="chart-body">
+                    <canvas id="deliveryDistChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Insights Panel -->
+        <section class="insights-panel">
+            <h3>🔍 Key Insights & Recommendations</h3>
+            <div class="insights-grid" id="insightsGrid"></div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+        <p>Built by <strong>Sharan Biradar</strong> | Data Analyst | October 2026</p>
+        <p class="footer-tech">Python • Pandas • SQL • Power BI • Chart.js</p>
+    </footer>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
