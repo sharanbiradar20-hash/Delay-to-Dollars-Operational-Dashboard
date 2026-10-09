@@ -1,91 +1,117 @@
 # 📊 Delay-to-Dollars: Operational Bottleneck & Revenue-at-Risk Dashboard
 
-## 🚀 Overview & Business Problem
-Organizations often struggle to connect sales performance, logistics operations, and inventory risks. As a result, operational inefficiencies go undetected until they manifest as revenue leakage. 
+An end-to-end data analytics project uncovering operational bottlenecks, quantifying stockout revenue leakage, and evaluating delivery SLA performance across FMCG supply chain operations.
 
-This project delivers an end-to-end **Business Intelligence & Operational Analytics** solution that quantifies the financial impact of logistics bottlenecks and supply chain gaps. By analyzing 500+ transactions across 4 Nigerian regions, the project uncovers hidden revenue risks and provides actionable, data-driven recommendations to improve fulfillment SLA compliance and recover lost sales.
-
----
-
-## 📈 Executive Summary (Key Findings)
-
-- **🚨 Revenue Leakage**: Identified **$20,093** in lost sales due to stockouts — representing a **20.7% revenue leakage rate** against actual revenue ($97.2K).
-- **🚚 Delivery Reliability Crisis**: Discovered a **25.4% late delivery rate** (1 in 4 orders delivered beyond the 4-day SLA), concentrated heavily in the South (28.2%) and North (29.0%) regions.
-- **📦 Revenue Concentration Risk**: Found that a single product category (Vapes) contributes **39% of total revenue** ($38.2K), exposing the business to severe dependency risk.
-- **💰 Discount Erosion**: Average discount of 5.2% reduces gross revenue by $6,714 annually. Statistical analysis (Pearson correlation) shows discount depth negatively impacts profit margins without proportionally driving volume.
+![Operations Dashboard Overview](operations_dashboard.png)
 
 ---
 
-## 🛠️ Technical Implementation & Methodology
+## 📌 Executive Summary
 
-To elevate this project from a standard dashboard to a comprehensive data analysis portfolio piece, I implemented a full-stack analytics workflow:
+Supply chain operational bottlenecks silently erode profitability. This project analyzes **500 transaction records** across 4 distribution hubs to quantify revenue-at-risk caused by delivery delays and inventory stockouts.
 
-### 1. Exploratory Data Analysis (Python/Pandas)
-- Conducted data profiling, missing value checks, and descriptive statistics.
-- Built **correlation heatmaps** to identify relationships between discounts, margins, and delivery times.
-- Performed **Pareto analysis (80/20 rule)** to highlight product revenue concentration.
-- *Files: `notebooks/01_data_profiling_and_eda.ipynb`*
-
-### 2. Statistical Analysis & Modeling (SciPy/Scikit-learn)
-- **ANOVA Testing**: Validated that delivery days differ significantly across regions (p < 0.05).
-- **Chi-Square Testing**: Analyzed the association between product categories and delivery delays.
-- **Linear Regression**: Built a model to predict `Lost_Sales_Estimate` based on operational factors (R² = 0.85).
-- **Time Series Decomposition**: Isolated trend and seasonality from monthly revenue data.
-- *Files: `notebooks/02_statistical_analysis.ipynb`*
-
-### 3. Advanced SQL Analysis (SQLite/Window Functions)
-- Utilized window functions (`RANK`, `DENSE_RANK`, `LAG`) for month-over-month growth and product ranking.
-- Built complex CTEs for inventory risk assessment (Stock vs Reorder levels).
-- Executed full star-schema `JOIN`s to analyze stockout impact across regions and segments.
-- *Files: `sql/01_revenue_analysis.sql`, `sql/02_delivery_and_stockout_analysis.sql`*
-
-### 4. Interactive Web Dashboard (HTML/CSS/JS/Chart.js)
-- Developed a custom, interactive web dashboard showcasing the findings without requiring Power BI.
-- Features dynamic KPI cards, MoM trend charts, and a Sales Rep Performance Scorecard.
-- *Files: `web_dashboard/index.html`*
-
-### 5. Original Power BI Dashboard (DAX/Power Query)
-- Cleaned and modeled the raw dataset using Power Query (Star Schema).
-- Created advanced DAX measures (`Revenue at Risk`, `Delivery SLA Compliance`, `MoM Growth %`).
+### Key Insights & Business Impact
+- **🚨 $20,093 Revenue at Risk:** Lost sales due to stockout events represent **20.7% revenue leakage** against total net revenue ($97.2K).
+- **🚚 25.4% Late Delivery Rate:** 1 out of 4 orders failed the 4-day delivery SLA, heavily concentrated in the **Abuja Hub (29.0%)** and **Port Harcourt DC (28.2%)**.
+- **🎯 80/20 Revenue Risk:** A single product category (**Vapes**) accounts for **39.3% ($38.2K)** of total revenue, creating high dependency risk.
+- **📦 Critical Bottleneck:** *Vibe Device Starter Kit* suffered **$5,988 in lost revenue** across 6 stockout events, making it the single largest operational bottleneck.
 
 ---
 
-## 💼 Actionable Recommendations
+## 🛠️ Tech Stack & Architecture
 
-Based on the quantified insights, I recommend the following operational improvements:
-
-1. **Inventory Optimization**: Reducing the overall stockout rate from 12.2% to 6% will recover an estimated **$10,000 in annual revenue**. Prioritize reorder alerts for *Vibe Device Starter Kit (P06)*, which accounts for $5.9K of the total lost sales.
-2. **Targeted Logistics Intervention**: Deploy route optimization and localized carrier partnerships in the South and North regions to reduce the late delivery rate to below 20% within two quarters.
-3. **Portfolio Diversification**: Launch marketing initiatives for Oral Nicotine and Heat-Not-Burn products to reduce the 39% revenue dependency on Vapes.
+| Layer | Tool / Technology | Purpose |
+| :--- | :--- | :--- |
+| **Data Processing & EDA** | Python (`pandas`, `numpy`) | Data cleaning, feature engineering, and exploratory analysis |
+| **Statistical Analysis** | Python (`scipy`, `statsmodels`) | Hypothesis testing (ANOVA, Chi-Square), Linear Regression |
+| **Database & Queries** | SQLite, SQL | CTEs, Star Schema JOINs, Window Functions (`SUM OVER`, `LAG`, `NTILE`) |
+| **Visualization & Reporting** | Power BI (`.pbix`), Matplotlib, Seaborn | Executive dashboards, trend lines, and Pareto plots |
+| **Web Dashboard** | HTML5, CSS3, JavaScript (Chart.js) | Standalone interactive UI for live data exploration |
 
 ---
 
-## 📂 Repository Structure
+## 📊 Visual Insights & Key Analytics
+
+### 1. Delivery Days Distribution by Warehouse (ANOVA Test)
+*Statistically significant variance in fulfillment SLA performance across regional warehouses (p < 0.05).*
+
+![ANOVA Delivery Days](reports/figures/anova_delivery_days.png)
+
+### 2. Stockout Financial Impact & Lost Sales
+*Quantifying revenue leakage across top impacted product categories and customer segments.*
+
+![Stockout Impact](reports/figures/stockout_impact.png)
+
+### 3. Pareto 80/20 Revenue Concentration
+*Demonstrating revenue concentration where top 3 categories drive over 80% of sales.*
+
+![Pareto Analysis](reports/figures/pareto_analysis.png)
+
+### 4. Correlation Heatmap (Discount vs. Margin)
+*Identifying profit margin erosion from aggressive discounting strategies.*
+
+![Correlation Heatmap](reports/figures/correlation_heatmap.png)
+
+---
+
+## ⚡ Quick Start & How to Run
+
+### 1. Run SQL Queries via Python
+Load the raw dataset into a local SQLite database and execute advanced SQL scripts:
+```powershell
+python sql/run_queries.py
+```
+
+### 2. Launch Interactive Web Dashboard
+View the standalone web dashboard in your local browser:
+```powershell
+python -m http.server 8000 --directory web_dashboard
+```
+Open **[http://localhost:8000](http://localhost:8000)** in your browser.
+
+### 3. Run Jupyter Notebooks (EDA & Statistics)
+Open VS Code or Jupyter and execute all cells in:
+- `notebooks/01_data_profiling_and_eda.ipynb`
+- `notebooks/02_statistical_analysis.ipynb`
+
+---
+
+## 💡 Strategic Recommendations
+
+1. **Recalibrate Reorder Points:** Implement dynamic safety stock calculations for top-tier products (*Vibe Device Starter Kit* & *Vibe Pod Mint*) to reduce stockouts by 50%, recovering **~$10,000 annually**.
+2. **Targeted Regional Logistics Overhaul:** Re-negotiate carrier SLAs in **Abuja** and **Port Harcourt** to reduce fulfillment delays from 3.66 days down to < 3 days.
+3. **Discount Policy Governance:** Cap discretionary sales rep discounts at 5% max to prevent margin erosion without impacting order volume.
+
+---
+
+## 📁 Repository Structure
 
 ```text
 ├── data/
 │   ├── operational_intelligence_dataset.xlsx  # Raw source data
-│   └── operational_intelligence.db            # SQLite database
+│   └── operational_intelligence.db            # Generated SQLite database
 ├── notebooks/
-│   ├── 01_data_profiling_and_eda.ipynb        # Python EDA & Visualizations
-│   └── 02_statistical_analysis.ipynb          # Hypothesis testing & regression
+│   ├── 01_data_profiling_and_eda.ipynb        # Exploratory Data Analysis & Visualizations
+│   └── 02_statistical_analysis.ipynb          # ANOVA, Regression & Hypothesis Testing
 ├── sql/
-│   ├── 01_revenue_analysis.sql                # SQL window functions & CTEs
-│   ├── 02_delivery_and_stockout_analysis.sql  # SQL performance queries
-│   └── run_queries.py                         # Execution script
+│   ├── 01_revenue_analysis.sql                # SQL Window Functions & CTEs
+│   ├── 02_delivery_and_stockout_analysis.sql  # Delivery & Stockout Impact Queries
+│   └── run_queries.py                         # SQLite runner script
 ├── web_dashboard/
-│   ├── index.html                             # Interactive dashboard UI
-│   ├── dashboard.css                          # Custom styling
-│   └── dashboard.js                           # Chart.js implementation & logic
+│   ├── index.html                             # Interactive Web UI
+│   ├── dashboard.css                          # Modern UI styling
+│   └── dashboard.js                           # Dynamic Chart.js logic
 ├── reports/
-│   └── figures/                               # Exported charts from Python
-├── Delay-to-Dollars-Dashboard.pbix    # Power BI file
-└── README.md                                  # Project documentation
+│   └── figures/                               # Exported charts and visual figures
+├── Delay-to-Dollars-Dashboard.pbix            # Interactive Power BI report file
+├── operations_dashboard.png                   # Dashboard preview image
+└── README.md                                  # Main documentation
 ```
 
 ---
 
-## 🔗 Author
+## 👤 Author
 
 **Sharan Biradar**  
-Data Analyst Intern | Python • SQL • Power BI  
+*Data Analyst Intern Candidate*  
+[LinkedIn](#) • [Portfolio](#)
