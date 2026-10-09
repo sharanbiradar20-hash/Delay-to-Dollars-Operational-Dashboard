@@ -113,5 +113,4 @@ Open VS Code or Jupyter and execute all cells in:
 ## 👤 Author
 
 **Sharan Biradar**  
-*Data Analyst Intern Candidate*  
-[LinkedIn](#) • [Portfolio](#)
+
